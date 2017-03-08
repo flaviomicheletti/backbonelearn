@@ -49,16 +49,14 @@
         <!-- códigos -->
         <script src="models/users.js"></script>
         <script src="views/users.js"></script>
+        <script src="routers/main.js"></script>
 
+        <!-- desenvolvendo... -->
         <script type="text/javascript">
             (function($){
 
                 // quando o documento estiver carregado
                 $(document).ready(function(){
-
-                    // instanciamos a collection lincada a model userModel;
-                    window.users = new userCollections();
-                    window.user_view = new userViewes({model: users});
 
                     // se o formulário for submetido.
                     $("#form-new-user").submit(function() {
