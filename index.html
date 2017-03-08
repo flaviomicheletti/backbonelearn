@@ -1,143 +1,77 @@
-<html>
-<head>
-    <script src="js/undescore.js"></script>
-    <script src="js/jquery-3.1.1.min.js"></script>
-    <script src="js/json2.js"></script>
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <title>tittle</title>
+        <meta charset="utf-8">
+      <style>
+        .label {
+          padding:1em;
+        }
+        .nome {
+          text-decoration: underline;
+          color:black;
+        }
+        .sobrenome {
+          color:black;
+        }
+      </style>
+    </head>
+  <body>
 
-    <script src="js/backbone.js"></script>
+    <div id="principal">
+      <form action="" id="form-new-user" class="formulario">
+        <span class="label">Name?</span><input type="text" id="iName" class="input">
+        <span class="label">Last Name?</span><input type="text" id="iLName" class="input">
 
-
-    <script type="text/template" id="userTemplate">
-      <span class="nome"><%= nome %></span>
-      <span class="sobrenome"><%= sobrenome %></span>
-      <a href="#" class="editar">Editar</a>
-      <a href="#" class="remover">Remover</a>
-    </script>
-    <style>
-      .label {
-        padding:1em;
-      }
-      .nome {
-        text-decoration: underline;
-        color:black;
-      }
-      .sobrenome {
-        color:black;
-      }
-    </style>
-</head>
-<body>
-  <div id="principal">
-    <form action="" id="form-new-user" class="formulario">
-      <span class="label">Name?</span><input type="text" id="iName" class="input">
-      <span class="label">Last Name?</span><input type="text" id="iLName" class="input">
-
-      <button>Send</button> 
-      <hr>
-      <div id="userContainer"></div>
-    </form>
-  </div>
-</body>
-</html>
-    <script type="text/javascript">
-        (function($){
-            //criamos a model
-            var userModel = Backbone.Model.extend({
-              defaults: function() {
-                return {
-                  nome: '',
-                  sobrenome: ''
-                };
-              }
-            });
-            //criamos uma collection e lincamos a model na collection. (model userModel lincada na collection userCollections)
-            var userCollections = Backbone.Collection.extend({
-              model: userModel
-            });
-
-             var users = new userCollections(); //instanciamos a collection lincada a model userModel;
-
-             var userView = Backbone.View.extend({
-                model: new userModel(),
-                tagName : 'div',
-                class : "userName",
-                events :{
-                  'click .editar'  : 'editar',
-                  'click .remover' : 'remover',
-                  'blur .sobrenome': 'fechar',
-                   'keypress .sobrenome' : 'onEnterUpdate',
-                },
-                editar : function(ev) {
-                  ev.preventDefault();
-                  this.$('.sobrenome').attr('contenteditable', true).focus();
-                },
-                fechar : function(ev) {
-                  var sobrenome = $(".sobrenome").text();
-                  this.model.set("sobrenome", sobrenome);
-                  $(".sobrenome").val();
-                  this.$(".sobrenome").removeAttr("contenteditable");
-
-                
-                },
-                onEnterUpdate : function(ev) {
-                  var self = this;
-                  if(ev.keyCode == 13) {
-                    self.fechar();
-                    _.delay(function(){
-                      self.$(".sobrenome").blur();
-                    }, 100);
-                  }
-                },
-                remover : function(ev) {
-                  ev.preventDefault();
-                  users.remove(this.model);
-                },
-                initialize: function(){
-                  this.template = _.template($("script#userTemplate").html());
-                },
-                render : function() {
-                   this.$el.html(this.template(this.model.toJSON()));
-                   return this;
-                }
-             });
+        <button>Send</button>
+        <hr>
+        <div id="userContainer"></div>
+      </form>
+    </div>
 
 
-             var userViewes = Backbone.View.extend({
-                model: users,
-                el: $("#userContainer"),
-                initialize: function(){
-                  console.log(this);
-                  this.model.on("add", this.render, this);
-                  this.model.on("remove", this.render, this);
-                },
-                render: function() {
-                  var self = this;
-                  self.$el.html("");
+      <!-- dependências (libs) -->
+      <script src="js/jquery-3.1.1.min.js"></script>
+      <script src="js/undescore.js"></script>
+      <script src="js/backbone.js"></script>
+      <script src="js/json2.js"></script>
 
-                 this.model.each(function(user, indice) {
-                     console.log(user.toJSON());
-                     self.$el.append((new userView({model:  user })).render().$el);
-                    
-                 }); 
-                
-                return this;
-               }
-             });
+      <!-- app (seu programa) -->
 
+          <!-- templates -->
+          <script type="text/template" id="userTemplate">
+            <span class="nome"><%= nome %></span>
+            <span class="sobrenome"><%= sobrenome %></span>
+            <a href="#" class="editar">Editar</a>
+            <a href="#" class="remover">Remover</a>
+          </script>
 
-            //quando o documento estiver carregado
-            $(document).ready(function(){
-                //se o formulário for submetido.
-                $("#form-new-user").submit(function() {
-                    //criamos uma nova instancia do model
-                    var u = { nome : $("#iName").val() ,sobrenome : $("#iLName").val() };
-                    var user = new userModel(u);
-                    users.add(user);
-                    // console.log(users);
-                    return false;
+        <!-- códigos -->
+        <script src="model/user.js"></script>
+        <script src="views/user.js"></script>
+
+        <script type="text/javascript">
+            (function($){
+
+                // quando o documento estiver carregado
+                $(document).ready(function(){
+
+                    // instanciamos a collection lincada a model userModel;
+                    window.users = new userCollections();
+                    window.user_view = new userViewes({model: users});
+
+                    // se o formulário for submetido.
+                    $("#form-new-user").submit(function() {
+                        //criamos uma nova instancia do model
+                        var u = { nome : $("#iName").val() ,sobrenome : $("#iLName").val() };
+                        var user = new userModel(u);
+                        users.add(user);
+                        // console.log(users);
+                        return false;
+                    });
+
                 });
-
-                var user_view =  new userViewes();
-            });           
-        })(jQuery);
-    </script>
+            })(jQuery);
+        </script>
+  </body>
+</html>
