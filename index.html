@@ -106,7 +106,6 @@
                 model: users,
                 el: $("#userContainer"),
                 initialize: function(){
-                  console.log(this);
                   this.model.on("add", this.render, this);
                   this.model.on("remove", this.render, this);
                 },
@@ -115,7 +114,6 @@
                   self.$el.html("");
 
                  this.model.each(function(user, indice) {
-                     console.log(user.toJSON());
                      self.$el.append((new userView({model:  user })).render().$el);
                     
                  }); 
@@ -133,7 +131,6 @@
                     var u = { nome : $("#iName").val() ,sobrenome : $("#iLName").val() };
                     var user = new userModel(u);
                     users.add(user);
-                    // console.log(users);
                     return false;
                 });
 
