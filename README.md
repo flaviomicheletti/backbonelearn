@@ -1,5 +1,5 @@
 # backbonelearn
 
-just learning Backbone framwork.
+just learning Backbone framework.
 
 status right now - noob.
